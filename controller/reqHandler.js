@@ -21,7 +21,7 @@ const selectAll = async(req, res)=>{
 const selectOne = async(req, res)=>{
     try{
         const data = await Employee.findOne({employeeID : req.params.eID})
-        data ? res.json(data) : res.send('No such employee exists!')
+        data ? res.json(data) : res.send('No such Employee with specified id exists!')
     }
     catch(err){
         console.log("Error:\n" + err)
@@ -69,7 +69,25 @@ const updateOne = async(req, res)=>{
 //URL: DELETE: /api/employee/<emplyeeID>
 
 const deleteEmployee = async(req, res)=>{        // delete one user
+    try {
 
+        const eID =  req.params.eID
+
+        if(await Employee.findOne({employeeID: eID})){
+            await Employee.deleteMany({employeeID: eID})        // delete all duplicates of the user
+        }
+        else{
+            res.send("No such Employee with specified id exists!")
+            return
+        }
+
+        await Employee.findOne({employeeID: eID}) ? res.send("Data Deletion failed!") :  res.send('Data deletion Success!')
+        
+    } catch (err) {
+        console.log('Error:\n'+err)
+    }
 }
+// deleteOne(): delete only the first fetched result & keep duplicates
+// deleteMany(): delete specified data completely including duplicates
 
 module.exports = {selectAll, selectOne, insertOne, updateOne, deleteEmployee}
