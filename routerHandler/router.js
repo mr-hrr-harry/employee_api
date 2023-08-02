@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
 
-const {selectAll, selectOne, insertOne, updateOne, deleteOne} = require('../controller/reqHandler')
+const {selectAll, selectOne, insertOne, updateOne, deleteEmployee} = require('../controller/reqHandler')
 
-router.route('/').get(selectAll).post(insertOne)
-router.route('/:eID').get(selectOne).patch(updateOne).delete(deleteOne)
+router.route('/').get(selectAll).put(insertOne)
+router.route('/:eID').get(selectOne).patch(updateOne).delete(deleteEmployee)
 
 module.exports = router

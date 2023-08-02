@@ -14,7 +14,7 @@ const selectAll = async(req, res)=>{
     }
 }
 
-//Action: SelectOne
+//Action: Select One
 //Method: findOne()
 //URL: GET: /api/employee/<emplyeeID>
 
@@ -28,23 +28,35 @@ const selectOne = async(req, res)=>{
     }
 }
 
+//Action: Insert One
+//Method: create(), validate(), 'save()'
+//URL: PUT: /api/employee/<emplyeeID> (or) POST
+
 const insertOne = async(req, res)=>{
     try{
-        const {employeeID, emplyeeID, gender, pendingWork} = req.body
-        if(!employeeID || !emplyeeID || !gender ||  !pendingWork){
+        let {employeeID, employeeName, gender, pendingWork} = req.body
+        if(!employeeID || !employeeName || !gender){
             console.log('Insufficient or Incorrect Data!')
-            return
+            res.send('Insufficient or Incorrect Data!')
         }
+        pendingWork = pendingWork ? pendingWork : false
 
-        const data = await Employee.create({
-            employeeID, emplyeeID, gender, pendingWork
-        })
+        if(await Employee.findOne({employeeID: employeeID})){
+            res.json({'Note' : 'Oops! Employee ID taken already!'})
+        }
+        else{
+            const data = await Employee.create({
+                employeeID, employeeName, gender, pendingWork
+            })
 
-        await data.validate().save()
-        res.json({"Status" : "Successul Insertion!\n"}, data)
+            await data.validate()
+            let dataCopy = await data.save()
+
+            res.json(dataCopy)
+        }   
     }
     catch(err){
-
+        console.log("Error:\n"+err);
     }
 }
 
@@ -52,8 +64,12 @@ const updateOne = async(req, res)=>{
 
 }
 
-const deleteOne = async(req, res)=>{
+//Action: Delete Employee
+//Method: deleteMany()
+//URL: DELETE: /api/employee/<emplyeeID>
+
+const deleteEmployee = async(req, res)=>{        // delete one user
 
 }
 
-module.exports = {selectAll, selectOne, insertOne, updateOne, deleteOne}
+module.exports = {selectAll, selectOne, insertOne, updateOne, deleteEmployee}

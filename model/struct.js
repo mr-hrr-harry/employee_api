@@ -4,6 +4,7 @@ const schemaStructure = mongoose.Schema({
     employeeID:{
         type: String,
         required: true,
+        unique: true,
     },
     employeeName:{
         type: String,
