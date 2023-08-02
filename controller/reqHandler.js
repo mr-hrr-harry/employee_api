@@ -7,7 +7,7 @@ const Employee = require('../model/struct')
 const selectAll = async(req, res)=>{
     try{
         const data = await Employee.find();
-        data ? res.json(data) : res.send("No Employee data Exists!")
+        data.length!=0 ? res.json(data) : res.send("DB empty! No Employee data Exists!")
     }
     catch(err){
         console.log("Error:\n" + err);
@@ -29,7 +29,23 @@ const selectOne = async(req, res)=>{
 }
 
 const insertOne = async(req, res)=>{
+    try{
+        const {employeeID, emplyeeID, gender, pendingWork} = req.body
+        if(!employeeID || !emplyeeID || !gender ||  !pendingWork){
+            console.log('Insufficient or Incorrect Data!')
+            return
+        }
 
+        const data = await Employee.create({
+            employeeID, emplyeeID, gender, pendingWork
+        })
+
+        await data.validate().save()
+        res.json({"Status" : "Successul Insertion!\n"}, data)
+    }
+    catch(err){
+
+    }
 }
 
 const updateOne = async(req, res)=>{
