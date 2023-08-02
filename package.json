@@ -4,6 +4,8 @@
   "description": "Simple API on Employee using Nodejs || ExpressJS || MongoDB",
   "main": "server.js",
   "scripts": {
+    "start" : "node server.js",
+    "devRun": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "M A Harish J",
