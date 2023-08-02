@@ -30,7 +30,7 @@ const selectOne = async(req, res)=>{
 
 //Action: Insert One
 //Method: create(), validate(), 'save()'
-//URL: PUT: /api/employee/<emplyeeID> (or) POST
+//URL: PUT: /api/employee/ (or) POST
 
 const insertOne = async(req, res)=>{
     try{
@@ -60,8 +60,22 @@ const insertOne = async(req, res)=>{
     }
 }
 
+//Action: Delete Employee
+//Method: deleteMany()
+//URL: DELETE: /api/employee/<emplyeeID>
 const updateOne = async(req, res)=>{
-
+    try {
+        if(await Employee.findOne({employeeID : req.params.eID})){
+            const data = await Employee.findOneAndUpdate({employeeID: req.params.eID}, req.body, {new: true})
+            console.log("Data updated Successfully!")
+            res.json(data)
+        }
+        else{
+            res.send('No such Employee with specified id exists!')
+        }
+    } catch (err) {
+        console.log("Error:\n" + err)
+    }
 }
 
 //Action: Delete Employee
@@ -74,14 +88,13 @@ const deleteEmployee = async(req, res)=>{        // delete one user
         const eID =  req.params.eID
 
         if(await Employee.findOne({employeeID: eID})){
-            await Employee.deleteMany({employeeID: eID})        // delete all duplicates of the user
+            await Employee.deleteMany({employeeID: eID})        // deletes all duplicates of the user
+            await Employee.findOne({employeeID: eID}) ? res.send("Data Deletion failed!") :  res.send('Data deletion Success!') // confirm
         }
         else{
             res.send("No such Employee with specified id exists!")
-            return
         }
 
-        await Employee.findOne({employeeID: eID}) ? res.send("Data Deletion failed!") :  res.send('Data deletion Success!')
         
     } catch (err) {
         console.log('Error:\n'+err)
